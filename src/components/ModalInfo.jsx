@@ -4,10 +4,16 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm }) {
 
   const tarifaBase = product.price;
   const tarifaEnvio = product.price + 1500000;
-  const total = parseFloat(product.price) + tarifaBase + tarifaEnvio;
+  const total = parseFloat(tarifaBase) + tarifaBase + tarifaEnvio;
 
 
- 
+ const getCardType = (number) => {
+    const cleaned = number.replace(/\D/g, '');
+    if (/^4/.test(cleaned)) return 'visa';
+    if (/^5[1-5]/.test(cleaned)) return 'mastercard';
+    return null;
+  };
+
 
   return (
     <div
