@@ -1,11 +1,23 @@
+import { useState, useEffect } from "react";
+import { accepToken } from "../services/AcceptToken";
+import { createTranfer } from "../services/CreateTranfer";
+import { Toaster, toast } from 'sonner';
+import { tokenizacionCard } from "../services/TokenizacionCard";
 
-export function PaymentSummaryModal({ product, show, onClose, onConfirm }) {
+
+export function PaymentSummaryModal({ product, show, onClose, onConfirm, setFormData, formData }) {
   if (!product) return null;
 
-  const tarifaBase = product.price;
-  const tarifaEnvio = product.price + 1500000;
-  const total = parseFloat(tarifaBase) + tarifaBase + tarifaEnvio;
+  const arancel = 0.10; // 10% de impuesto de importación
+  const iva = 0.19; // 19% de IVA
 
+  const impuestoImportacion = product.price * arancel;
+  const impuestoIVA = (product.price + impuestoImportacion) * iva;
+
+  const tarifaBase = parseFloat(product.price);
+  const tarifaEnvio = 15000;  
+  const importProduct = product.price + impuestoImportacion + impuestoIVA;
+  const total = tarifaBase + tarifaEnvio;
 
  const getCardType = (number) => {
     const cleaned = number.replace(/\D/g, '');
@@ -14,12 +26,66 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm }) {
     return null;
   };
 
+  const formatoCOP = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+  });
+
+
+  const [aceptacion, setAceptacion] = useState('');
+  const [autorizacion, setAutorizacion] = useState('');
+
+  useEffect(() => {
+    const getTokens = async () => {
+      try {
+        const { data } = await accepToken();
+        setAceptacion(data.presigned_acceptance.acceptance_token);
+        setAutorizacion(data.presigned_personal_data_auth.acceptance_token);
+      } catch (err) {
+        console.error('Error obteniendo términos:', err);
+      }
+    };
+
+    getTokens();
+  }, []);
+
+  const continuarConPago = async () => {
+    try {
+      
+      const btnPagar = document.getElementById('btn-pagar');
+      const  data  = await tokenizacionCard(formData);
+      
+      if (data.status !== "CREATED") {
+        throw new Error('Error al obtener el token Users');
+      }
+
+      const { id } = data.data;
+      
+      const responseData = await createTranfer(total, aceptacion, autorizacion, formData, product.name, id);
+      if (responseData.success) {
+        
+        btnPagar.disabled = true;
+        toast.success('Pago realizado exitosamente');
+        onclose();
+
+      }
+
+    } catch (error) {
+      throw new Error(error);
+    }
+    
+
+  };
+
 
   return (
+    <>
+    <Toaster position="top-right"/>
     <div
       className={`modal fade ${show ? 'show d-block' : ''}`}
       tabIndex="-1"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      style={{ backgroundColor: 'rgba(67,0,0,0.5)' }}
       role="dialog"
       aria-modal="true"
     >
@@ -34,34 +100,51 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm }) {
             <div className="mb-3 text-center">
                 <img src={product.image} alt={product.name} className="img-fluid" style={{ maxHeight: '80px', objectFit: 'contain' }}/>
                 <h6>{product.name}</h6>
-                <p className="fw-bold text-primary">Precio: ${product.price}</p>
+                <p className="fw-bold text-primary">Precio: {formatoCOP.format(product.price)}</p>
             </div>
 
             <ul className="list-group mb-3">
               <li className="list-group-item d-flex justify-content-between">
                 <span>Importe del producto</span>
-                <strong>${parseFloat(product.price).toFixed(2)}</strong>
+                <strong>{formatoCOP.format(parseFloat(importProduct))}</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
                 <span>Tarifa base</span>
-                <strong>${tarifaBase.toFixed(2)}</strong>
+                <strong>{formatoCOP.format(tarifaBase)}</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
                 <span>Tarifa de envío</span>
-                <strong>${tarifaEnvio.toFixed(2)}</strong>
+                <strong>{formatoCOP.format(tarifaEnvio)}</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
                 <span>Total</span>
-                <strong className="text-success">${total.toFixed(2)}</strong>
+                <strong className="text-success">{formatoCOP.format(total)}</strong>
               </li>
             </ul>
+
+            <div className="list-group-item mb-2 ">
+              <input className="form-check-input" type="checkbox" id="terminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({ ...formData, aceptaTerminos: e.target.checked })}/>
+              <label className="form-check-label" htmlFor="terminos">He leído y acepto los <a href={aceptacion.permalink} target="_blank" rel="noopener noreferrer">Términos y Condiciones</a></label>
+            </div>
+
+            <div className="list-group-item mb-2 ">
+              <input className="form-check-input" type="checkbox" id="datos" checked={formData.autorizaDatos} onChange={(e) =>setFormData({ ...formData, autorizaDatos: e.target.checked })}/>
+              <label className="form-check-label" htmlFor="datos"> Autorizo el uso de mis datos personales según lo establecido por <br/> <a href={autorizacion.permalink} target="_blank" rel="noopener noreferrer">Wompi</a></label>
+            </div>
+
           </div>
+        
+
+
           <div className="modal-footer">
             <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-            <button className="btn btn-primary" onClick={onConfirm}>Pagar ahora 💳</button>
+            <button id="btn-pagar" className="btn btn-success mt-3"
+    disabled={!formData.aceptaTerminos || !formData.autorizaDatos}
+    onClick={continuarConPago} >Pagar ahora 💳</button>
           </div>
         </div>
       </div>
     </div>
+</>
   );
 }
