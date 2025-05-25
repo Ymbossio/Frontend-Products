@@ -3,27 +3,21 @@ import { accepToken } from "../services/AcceptToken";
 import { createTranfer } from "../services/CreateTranfer";
 import { Toaster, toast } from 'sonner';
 import { tokenizacionCard } from "../services/TokenizacionCard";
+import { formatoCOP } from "../util/functions";
 
 
 export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard }) {
   if (!product) return null;
 
-  const arancel = 0.10; // 10% de impuesto de importación
-  const iva = 0.19; // 19% de IVA
+  const iva = 0.19;
 
-  const impuestoImportacion = product.price * arancel;
-  const impuestoIVA = (product.price + impuestoImportacion) * iva;
+  const tarifaBase = product.price * (1 + iva / 100);
 
-  const tarifaBase = parseFloat(product.price);
   const tarifaEnvio = 15000;  
-  const importProduct = product.price + impuestoImportacion + impuestoIVA;
-  const total = tarifaBase + tarifaEnvio;
+  const importProduct = product.price * 1;
 
-  const formatoCOP = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0,
-  });
+  const total = tarifaBase + importProduct + tarifaEnvio;
+
 
 
   const [aceptacion, setAceptacion] = useState('');
@@ -68,7 +62,6 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
       const responseData = await createTranfer(total, aceptacion, autorizacion, formData, product.name, id);
       if (responseData.success) {
         
-        btnPagar.disabled = false;
         toast.success('Pago realizado exitosamente');
         setModalInfo(false);
         setDetailsCard(false);
@@ -86,7 +79,6 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
 
   return (
     <>
-      <Toaster position="top-right"/>
 
     {
       modalInfo && (
@@ -149,6 +141,8 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
 
       )
     }
+ <Toaster position="top-right"/>
+
 </>
   );
 }

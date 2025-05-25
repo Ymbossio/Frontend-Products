@@ -39,3 +39,9 @@ export const getCardType = (number) => {
     if (/^5[1-5]/.test(cleaned)) return 'mastercard';
     return null;
 };
+
+export const formatoCOP = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0,
+});
