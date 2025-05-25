@@ -9,11 +9,14 @@ export function PaymentModal({ product, show, onClose }) {
 
     const [formData, setFormData] = useState({
         nombre: '',
+        correo: '',
         numero: '',
         expiracion: '',
         cvv: '',
         ciudad: '',
         direccion: '',
+        aceptaTerminos: false,
+        autorizaDatos: false,
     });
 
 
@@ -58,7 +61,6 @@ export function PaymentModal({ product, show, onClose }) {
             return;
         }
         
-        console.log('tarjeta valida');
         setSelectedProduct(product);
         setShowSummary(true);
 
@@ -84,6 +86,7 @@ export function PaymentModal({ product, show, onClose }) {
     return (
         formData.nombre.trim() !== '' &&
         formData.numero.trim() !== '' &&
+        formData.email.trim() !== '' &&
         formData.expiracion.trim() !== '' &&
         formData.cvv.trim() !== ''
     );
@@ -106,7 +109,12 @@ export function PaymentModal({ product, show, onClose }) {
                 <form>
                     <div className="mb-2">
                         <label className="form-label">Nombre del titular</label>
-                        <input type="text" name='nombre'value={formData.nombre} onChange={handleInputChange} className="form-control" required />
+                        <input type="text" name='nombre' value={formData.nombre} onChange={handleInputChange} className="form-control" required />
+                    </div>
+
+                    <div className="mb-2">
+                        <label className="form-label">Correo Electrónico</label>
+                        <input type="email" name='correo' value={formData.correo} onChange={handleInputChange} className="form-control" required />
                     </div>
 
                     <div className="mb-2">
@@ -124,7 +132,7 @@ export function PaymentModal({ product, show, onClose }) {
                     <div className="row">
                         <div className="col-md-6 mb-2">
                         <label className="form-label">Fecha de expiración</label>
-                        <input type="month" name='expiracion' value={formData.expiracion} onChange={handleInputChange} className="form-control" placeholder="MM/AA" required />
+                        <input type="text" name='expiracion' value={formData.expiracion} onChange={handleInputChange} className="form-control" placeholder="MM/AA" required />
                         </div>
                         <div className="col-md-6 mb-2">
                         <label className="form-label">CVV</label>
@@ -159,6 +167,8 @@ export function PaymentModal({ product, show, onClose }) {
             show={showSummary}
             onClose={() => setShowSummary(false)}
             onConfirm={handleConfirmPayment}
+            formData={formData}
+            setFormData={setFormData}
         />
     
     </>
