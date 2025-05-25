@@ -1,4 +1,3 @@
-//import './App.css'
 import { useState, useEffect } from 'react'
 import { fetchProducts } from './api/products'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -8,16 +7,16 @@ function App() {
 
   const [products, setProducts] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [detailsCard, setDetailsCard] = useState(false);
   
   const openPaymentModal = (product) => {
     setSelectedProduct(product);
-    setShowModal(true);
+    setDetailsCard(true);
   };
 
   const closePaymentModal = () => {
     setSelectedProduct(null);
-    setShowModal(false);
+    setDetailsCard(false);
   };
 
 
@@ -59,8 +58,9 @@ return (
 
     <PaymentModal 
        product={selectedProduct}
-        show={showModal}
+        detailsCard={detailsCard}
         onClose={closePaymentModal}
+        setDetailsCard={setDetailsCard}
     />
   </>
 );
