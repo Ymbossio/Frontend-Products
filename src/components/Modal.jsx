@@ -3,7 +3,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { PaymentSummaryModal } from './ModalInfo';
 import { validateCard, getCardType } from '../util/functions';
 
-export function PaymentModal({ product, detailsCard, onClose, setDetailsCard }) {
+export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, setProducts}) {
     
     if (!product) return null;
 
@@ -130,6 +130,7 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard }) 
             formData={formData}
             setFormData={setFormData}
             setDetailsCard={setDetailsCard}
+            setProducts={setProducts}
         />
     
     </>

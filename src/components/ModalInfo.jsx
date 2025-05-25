@@ -4,9 +4,13 @@ import { createTranfer } from "../services/CreateTranfer";
 import { Toaster, toast } from 'sonner';
 import { tokenizacionCard } from "../services/TokenizacionCard";
 import { formatoCOP } from "../util/functions";
+import { updateStock } from "../services/UpdateStock";
+import { fetchProducts } from "../api/products";
+import { createDeliveries } from "../services/CreateDeliveries";
+import { createTransferInternal} from "../services/CreateTransferInternal";
 
 
-export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard }) {
+export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard, setProducts }) {
   if (!product) return null;
 
   const iva = 0.19;
@@ -59,14 +63,49 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
 
       const { id } = data.data;
       
+      //invoco al servicio de crear la transacción a la pasarela
       const responseData = await createTranfer(total, aceptacion, autorizacion, formData, product.name, id);
-      if (responseData.success) {
-        
-        toast.success('Pago realizado exitosamente');
-        setModalInfo(false);
-        setDetailsCard(false);
-
+      console.log("responseData", responseData);
+      
+      if (responseData.data?.status !== "PENDING") {
+        throw new Error('Error al crear la transacción');
       }
+
+      //propiedades necesarias para la creacion de la transaccion
+       const id_transfer = responseData.data.id;
+       const payment_method = responseData.data.payment_method.type;
+       const type_card = responseData.data.payment_method.extra.brand;
+       const card_holder = responseData.data.payment_method.extra.card_holder;
+       const status = responseData.data.status;
+       
+      //invoco el servicio de crear transaccion al internal
+      const responseTransferInternal = await createTransferInternal(id_transfer, payment_method, type_card, card_holder, status);
+      if(!responseTransferInternal.success){
+        throw new Error('Error al crear la transacción interna');
+      }
+
+      //invoco al servicio de  actualizar stock
+      const responseServiceStock =await updateStock(product.id, product.stock);    
+      if(!responseServiceStock.success){
+        throw new Error('Error al actualizar stock');
+      }
+
+      //propiedades necesarias para la creacion del deliveries
+       const id_transaction = responseData.data.id;
+       const name_client = formData.nombre;
+       const address = formData.direccion;
+
+      //invoco el servicio deliveries (crear entrega)
+      const responseDeliveries = await createDeliveries(name_client, address, id_transaction);
+      if(!responseDeliveries.success){
+        throw new Error('Error al crear la entrega');
+      }
+
+      await fetchProducts().then(setProducts);
+      toast.success('Pago realizado exitosamente');
+      setModalInfo(false);
+      setDetailsCard(false);
+    
 
     } catch (error) {
       btnPagar.disabled = true;
