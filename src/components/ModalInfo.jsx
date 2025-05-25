@@ -5,7 +5,7 @@ import { Toaster, toast } from 'sonner';
 import { tokenizacionCard } from "../services/TokenizacionCard";
 
 
-export function PaymentSummaryModal({ product, show, onClose, onConfirm, setFormData, formData }) {
+export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard }) {
   if (!product) return null;
 
   const arancel = 0.10; // 10% de impuesto de importación
@@ -18,13 +18,6 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm, setForm
   const tarifaEnvio = 15000;  
   const importProduct = product.price + impuestoImportacion + impuestoIVA;
   const total = tarifaBase + tarifaEnvio;
-
- const getCardType = (number) => {
-    const cleaned = number.replace(/\D/g, '');
-    if (/^4/.test(cleaned)) return 'visa';
-    if (/^5[1-5]/.test(cleaned)) return 'mastercard';
-    return null;
-  };
 
   const formatoCOP = new Intl.NumberFormat('es-CO', {
     style: 'currency',
@@ -50,10 +43,20 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm, setForm
     getTokens();
   }, []);
 
+
+  const handdleGoBack = () => {
+    setDetailsCard(true); 
+    setModalInfo(false);
+  };
+
+
   const continuarConPago = async () => {
+    
+    const btnPagar = document.getElementById('btn-pagar');
+    btnPagar.disabled = true;
+
     try {
       
-      const btnPagar = document.getElementById('btn-pagar');
       const  data  = await tokenizacionCard(formData);
       
       if (data.status !== "CREATED") {
@@ -65,13 +68,15 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm, setForm
       const responseData = await createTranfer(total, aceptacion, autorizacion, formData, product.name, id);
       if (responseData.success) {
         
-        btnPagar.disabled = true;
+        btnPagar.disabled = false;
         toast.success('Pago realizado exitosamente');
-        onclose();
+        setModalInfo(false);
+        setDetailsCard(false);
 
       }
 
     } catch (error) {
+      btnPagar.disabled = true;
       throw new Error(error);
     }
     
@@ -81,70 +86,69 @@ export function PaymentSummaryModal({ product, show, onClose, onConfirm, setForm
 
   return (
     <>
-    <Toaster position="top-right"/>
-    <div
-      className={`modal fade ${show ? 'show d-block' : ''}`}
-      tabIndex="-1"
-      style={{ backgroundColor: 'rgba(67,0,0,0.5)' }}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className="modal-dialog modal-dialog-centered modal-md">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Resumen de Pago</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
-          </div>
-          <div className="modal-body">
+      <Toaster position="top-right"/>
 
-            <div className="mb-3 text-center">
-                <img src={product.image} alt={product.name} className="img-fluid" style={{ maxHeight: '80px', objectFit: 'contain' }}/>
-                <h6>{product.name}</h6>
-                <p className="fw-bold text-primary">Precio: {formatoCOP.format(product.price)}</p>
+    {
+      modalInfo && (
+      <div className={`modal fade ${modalInfo ? 'show d-block' : ''}`} tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} role="dialog" aria-modal="true">
+        <div className="modal-dialog modal-dialog-centered modal-md">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Resumen de Pago</h5>
             </div>
+            <div className="modal-body">
 
-            <ul className="list-group mb-3">
-              <li className="list-group-item d-flex justify-content-between">
-                <span>Importe del producto</span>
-                <strong>{formatoCOP.format(parseFloat(importProduct))}</strong>
-              </li>
-              <li className="list-group-item d-flex justify-content-between">
-                <span>Tarifa base</span>
-                <strong>{formatoCOP.format(tarifaBase)}</strong>
-              </li>
-              <li className="list-group-item d-flex justify-content-between">
-                <span>Tarifa de envío</span>
-                <strong>{formatoCOP.format(tarifaEnvio)}</strong>
-              </li>
-              <li className="list-group-item d-flex justify-content-between">
-                <span>Total</span>
-                <strong className="text-success">{formatoCOP.format(total)}</strong>
-              </li>
-            </ul>
+              <div className="mb-3 text-center">
+                  <img src={product.image} alt={product.name} className="img-fluid" style={{ maxHeight: '80px', objectFit: 'contain' }}/>
+                  <h6>{product.name}</h6>
+                  <p className="fw-bold text-primary">Precio: {formatoCOP.format(product.price)}</p>
+              </div>
 
-            <div className="list-group-item mb-2 ">
-              <input className="form-check-input" type="checkbox" id="terminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({ ...formData, aceptaTerminos: e.target.checked })}/>
-              <label className="form-check-label" htmlFor="terminos">He leído y acepto los <a href={aceptacion.permalink} target="_blank" rel="noopener noreferrer">Términos y Condiciones</a></label>
+              <ul className="list-group mb-3">
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>Importe del producto</span>
+                  <strong>{formatoCOP.format(parseFloat(importProduct))}</strong>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>Tarifa base</span>
+                  <strong>{formatoCOP.format(tarifaBase)}</strong>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>Tarifa de envío</span>
+                  <strong>{formatoCOP.format(tarifaEnvio)}</strong>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>Total</span>
+                  <strong className="text-success">{formatoCOP.format(total)}</strong>
+                </li>
+              </ul>
+
+              <div className="list-group-item mb-2 ">
+                <input className="form-check-input" type="checkbox" id="terminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({ ...formData, aceptaTerminos: e.target.checked })}/>
+                <label className="form-check-label" htmlFor="terminos">He leído y acepto los <a href={aceptacion.permalink} target="_blank" rel="noopener noreferrer">Términos y Condiciones</a></label>
+              </div>
+
+              <div className="list-group-item mb-2 ">
+                <input className="form-check-input" type="checkbox" id="datos" checked={formData.autorizaDatos} onChange={(e) =>setFormData({ ...formData, autorizaDatos: e.target.checked })}/>
+                <label className="form-check-label" htmlFor="datos"> Autorizo el uso de mis datos personales según lo establecido por <br/> <a href={autorizacion.permalink} target="_blank" rel="noopener noreferrer">Wompi</a></label>
+              </div>
+
             </div>
+          
 
-            <div className="list-group-item mb-2 ">
-              <input className="form-check-input" type="checkbox" id="datos" checked={formData.autorizaDatos} onChange={(e) =>setFormData({ ...formData, autorizaDatos: e.target.checked })}/>
-              <label className="form-check-label" htmlFor="datos"> Autorizo el uso de mis datos personales según lo establecido por <br/> <a href={autorizacion.permalink} target="_blank" rel="noopener noreferrer">Wompi</a></label>
+
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={handdleGoBack}>Regresar</button>
+              <button id="btn-pagar" className="btn btn-success"
+                disabled={!formData.aceptaTerminos || !formData.autorizaDatos}
+                onClick={continuarConPago} >Pagar ahora 💳</button>
             </div>
-
-          </div>
-        
-
-
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-            <button id="btn-pagar" className="btn btn-success mt-3"
-    disabled={!formData.aceptaTerminos || !formData.autorizaDatos}
-    onClick={continuarConPago} >Pagar ahora 💳</button>
           </div>
         </div>
       </div>
-    </div>
+
+      )
+    }
 </>
   );
 }
