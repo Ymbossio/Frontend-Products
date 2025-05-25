@@ -61,6 +61,7 @@ return (
         detailsCard={detailsCard}
         onClose={closePaymentModal}
         setDetailsCard={setDetailsCard}
+        setProducts={setProducts}
     />
   </>
 );
