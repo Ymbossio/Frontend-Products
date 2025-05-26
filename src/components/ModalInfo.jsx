@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { accepToken } from "../services/AcceptToken";
-import { createTranfer } from "../services/CreateTranfer";
+import { sendAcceptToken } from "../services/SendAcceptToken";
 import { Toaster, toast } from 'sonner';
 import { tokenizacionCard } from "../services/TokenizacionCard";
 import { formatoCOP } from "../util/functions";
@@ -8,6 +8,8 @@ import { updateStock } from "../services/UpdateStock";
 import { fetchProducts } from "../api/products";
 import { createDeliveries } from "../services/CreateDeliveries";
 import { createTransferInternal} from "../services/CreateTransferInternal";
+import { getTransferenceById } from "../services/GetTransferById";
+import { updateTransference } from "../services/UpdateTransference";
 
 
 export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard, setProducts }) {
@@ -64,14 +66,16 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
       const { id } = data.data;
       
       //invoco al servicio de crear la transacción a la pasarela
-      const responseData = await createTranfer(total, aceptacion, autorizacion, formData, product.name, id);
-      console.log("responseData", responseData);
+      const responseData = await sendAcceptToken(total, aceptacion, autorizacion, formData, product.name, id);
       
       if (responseData.data?.status !== "PENDING") {
         throw new Error('Error al crear la transacción');
       }
 
-      //propiedades necesarias para la creacion de la transaccion
+      console.log(responseData);
+      
+
+      //propiedades necesarias para la creacion de la transaccion en estando pending
        const id_transfer = responseData.data.id;
        const payment_method = responseData.data.payment_method.type;
        const type_card = responseData.data.payment_method.extra.brand;
@@ -82,6 +86,19 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
       const responseTransferInternal = await createTransferInternal(id_transfer, payment_method, type_card, card_holder, status);
       if(!responseTransferInternal.success){
         throw new Error('Error al crear la transacción interna');
+      }
+
+      //consultar estado de la transaccion
+      const responseCreateTranfer = await getTransferenceById(id_transfer);
+      console.log("responseCreateTranfer", responseCreateTranfer);
+      if(!responseCreateTranfer.success){
+        throw new Error('Error al consultar la transacción');
+      }
+
+      //actualizacion del estado de la transaccion internal
+      const responseUpdateTranfer = await updateTransference(id_transfer, responseCreateTranfer.data.status);
+      if(!responseUpdateTranfer.success){
+        throw new Error('Error al actualizar la transacción');
       }
 
       //invoco al servicio de  actualizar stock
