@@ -2,6 +2,7 @@ import { useState } from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { PaymentSummaryModal } from './ModalInfo';
 import { validateCard, getCardType } from '../util/functions';
+import { usePaymentForm } from '../hooks/usePaymentForms';
 
 export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, setProducts}) {
     
@@ -10,53 +11,30 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
     const [modalInfo, setModalInfo] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const [formData, setFormData] = useState({
-        nombre: '',
-        correo: '',
-        numero: '',
-        expiracion: '',
-        cvv: '',
-        ciudad: '',
-        direccion: '',
-        aceptaTerminos: false,
-        autorizaDatos: false,
-    });
 
+     const {
+    formData,
+    setFormData,
+    handleInputChange,
+    isFormComplete
+  } = usePaymentForm({
+    nombre: '', correo: '', numero: '', expiracion: '', cvv: '',
+    ciudad: '', direccion: '', aceptaTerminos: false, autorizaDatos: false,
+  });
 
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-
-    const openSummary = (product) => {
-
+    const openSummary = () => {
+        
         //valido si la tarjeta ingresada es válida o no con el algoritmo de luhn
         if (!validateCard(formData.numero)) {
-            alert('⚠️ Tarjeta no válida');
-            return;
+        alert('⚠️ Tarjeta no válida');
+        return;
         }
-        
         setSelectedProduct(product);
         setDetailsCard(false);
         setModalInfo(true);
 
     };
 
-    
-    const isFormComplete = () => {
-        return (
-            formData.nombre.trim() !== '' &&
-            formData.numero.trim() !== '' &&
-            formData.correo.trim() !== '' &&
-            formData.expiracion.trim() !== '' &&
-            formData.cvv.trim() !== ''
-        );
-    };
 
   return (
     <>
