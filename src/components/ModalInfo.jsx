@@ -1,8 +1,14 @@
 import { Toaster } from 'sonner';
 import { formatoCOP } from "../util/functions";
 import { usePaymentProcess } from '../hooks/usePaymentProcess';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFormData } from '../redux/FormCardSlice'
 
-export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData, setFormData, setDetailsCard, setProducts }) {
+export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetailsCard, setProducts }) {
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.paymentForm);
+  const { aceptacion, autorizacion, handlePayment } = usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard });
+  
   if (!product) return null;
 
   
@@ -12,7 +18,6 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
   const importProduct = product.price;
   const total = tarifaBase + importProduct + tarifaEnvio;
 
-  const { aceptacion, autorizacion, handlePayment } = usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard });
 
 
   const handleGoBack = () => {
@@ -59,12 +64,12 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, formData
 
                 {/* Términos */}
                 <div className="list-group-item mb-2">
-                  <input className="form-check-input" type="checkbox" id="terminos" checked={formData.aceptaTerminos} onChange={(e) => setFormData({ ...formData, aceptaTerminos: e.target.checked })} />
+                  <input className="form-check-input" type="checkbox" id="terminos" checked={formData.aceptaTerminos} onChange={(e) => dispatch(setFormData({ aceptaTerminos: e.target.checked }))} />
                   <label className="form-check-label" htmlFor="terminos">Acepto los <a href={aceptacion.permalink} target="_blank" rel="noopener noreferrer">Términos</a></label>
                 </div>
 
                 <div className="list-group-item mb-2">
-                  <input className="form-check-input" type="checkbox" id="datos" checked={formData.autorizaDatos} onChange={(e) => setFormData({ ...formData, autorizaDatos: e.target.checked })} />
+                  <input className="form-check-input" type="checkbox" id="datos" checked={formData.autorizaDatos}  onChange={(e) => dispatch(setFormData({ autorizaDatos: e.target.checked }))} />
                   <label className="form-check-label" htmlFor="datos">Autorizo datos según <a href={autorizacion.permalink} target="_blank" rel="noopener noreferrer">Wompi</a></label>
                 </div>
               </div>

@@ -47,9 +47,7 @@ export const sendAcceptToken= async (total, aceptacion, autorizacion, formData, 
 
 
     if (!response.ok) {
-     console.log("error al crear la transacción");
      console.log(response);
-     
     }
 
     const responseData = await response.json();

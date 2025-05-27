@@ -9,8 +9,12 @@ import { createTransferInternal } from '../services/CreateTransferInternal';
 import { getTransferenceById } from '../services/GetTransferById';
 import { updateTransference } from '../services/UpdateTransference';
 import { toast } from 'sonner';
+import { useDispatch } from 'react-redux';
+import { setTransactionData } from '../redux/TransactionSlice';
+
 
 export function usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard }) {
+  const dispatch = useDispatch();
   const [aceptacion, setAceptacion] = useState('');
   const [autorizacion, setAutorizacion] = useState('');
 
@@ -41,6 +45,11 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       const responseData = await sendAcceptToken(total, aceptacion, autorizacion, formData, product.name, tokenId);
       if (responseData.data?.status !== "PENDING") throw new Error('Error al crear la transacción');
 
+
+      //persist transaction data  
+      dispatch(setTransactionData(responseData.data));
+      localStorage.setItem('transaction', JSON.stringify(responseData.data));
+
       const id_transfer = responseData.data.id;
       const { type: payment_method, extra } = responseData.data.payment_method;
       const { brand: type_card, card_holder } = extra;
@@ -50,7 +59,6 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       if (!internalRes.success) throw new Error('Error al crear transacción interna');
 
       const transferenceStatus = await getTransferenceById(id_transfer);
-      console.log("transferenceStatus", transferenceStatus);
       if (!transferenceStatus.success) throw new Error('Error al consultar transacción');
 
       const updated = await updateTransference(id_transfer, transferenceStatus.data.status);
