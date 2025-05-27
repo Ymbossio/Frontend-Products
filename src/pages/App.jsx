@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { fetchProducts } from './api/products'
+import { fetchProducts } from '../api/products'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {PaymentModal} from './components/Modal'
+import {PaymentModal} from '../components/Modal'
 
 function App() {
 
