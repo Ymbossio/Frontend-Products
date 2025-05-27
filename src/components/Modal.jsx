@@ -11,17 +11,13 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
     const [modalInfo, setModalInfo] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const {
+      formData,
+      handleInputChange,
+      isFormComplete
+    } = usePaymentForm();
 
-     const {
-    formData,
-    setFormData,
-    handleInputChange,
-    isFormComplete
-  } = usePaymentForm({
-    nombre: '', correo: '', numero: '', expiracion: '', cvv: '',
-    ciudad: '', direccion: '', aceptaTerminos: false, autorizaDatos: false,
-  });
-
+  
     const openSummary = () => {
         
         //valido si la tarjeta ingresada es válida o no con el algoritmo de luhn
@@ -29,6 +25,7 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
         alert('⚠️ Tarjeta no válida');
         return;
         }
+        
         setSelectedProduct(product);
         setDetailsCard(false);
         setModalInfo(true);
@@ -106,7 +103,6 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
             modalInfo={modalInfo}
             setModalInfo={setModalInfo}
             formData={formData}
-            setFormData={setFormData}
             setDetailsCard={setDetailsCard}
             setProducts={setProducts}
         />

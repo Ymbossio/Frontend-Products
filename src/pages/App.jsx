@@ -2,21 +2,24 @@ import { useState, useEffect } from 'react'
 import { fetchProducts } from '../api/products'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {PaymentModal} from '../components/Modal'
+import { useSelector, useDispatch } from 'react-redux'
+import { setSelectedProduct, clearSelectedProduct } from '../redux/ProductSlice'
 
 function App() {
 
   const [products, setProducts] = useState([])
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [detailsCard, setDetailsCard] = useState(false);
+  const [detailsCard, setDetailsCard] = useState(false)
+  const selectedProduct = useSelector(state => state.product.selectedProduct)
+  const dispatch = useDispatch()
+
   
   const openPaymentModal = (product) => {
-    setSelectedProduct(product);
-    setDetailsCard(true);
+    dispatch(setSelectedProduct(product))
+    setDetailsCard(true)
   };
 
   const closePaymentModal = () => {
-    setSelectedProduct(null);
-    setDetailsCard(false);
+    dispatch(clearSelectedProduct())
   };
 
 
@@ -57,10 +60,10 @@ return (
     </div>
 
     <PaymentModal 
-       product={selectedProduct}
+        product={selectedProduct}
         detailsCard={detailsCard}
-        onClose={closePaymentModal}
         setDetailsCard={setDetailsCard}
+        onClose={closePaymentModal}
         setProducts={setProducts}
     />
   </>
