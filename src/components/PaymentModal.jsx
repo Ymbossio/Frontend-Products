@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import { PaymentSummaryModal } from './ModalInfo';
+import { PaymentSummaryModal } from './PaymentSummaryModal';
 import { validateCard, getCardType } from '../util/functions';
 import { usePaymentForm } from '../hooks/usePaymentForms';
 
