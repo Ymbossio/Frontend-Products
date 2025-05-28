@@ -1,6 +1,6 @@
 // PaymentModal.test.jsx
 import { render, screen, fireEvent } from '@testing-library/react'
-import { PaymentModal } from '../../components/Modal'
+import { PaymentModal } from '../../components/PaymentModal'
 import { Provider} from 'react-redux'
 import { store } from '../../redux/store'
 import { vi } from 'vitest'
