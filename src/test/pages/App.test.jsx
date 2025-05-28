@@ -1,8 +1,20 @@
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import App from '../../pages/App';
 import { vi } from 'vitest';
-import { setSelectedProduct, clearSelectedProduct } from '../../redux/ProductSlice';
+import { setSelectedProduct } from '../../redux/ProductSlice';
 
+// 👇 mockDispatch definido una sola vez y reutilizado en todos los tests
+const mockDispatch = vi.fn();
+
+vi.mock('react-redux', () => ({
+  useDispatch: () => mockDispatch,
+  useSelector: (selector) =>
+    selector({
+      product: { selectedProduct: null },
+    }),
+}));
+
+// 👇 Mock de la API
 vi.mock('../../api/products', () => ({
   fetchProducts: () => Promise.resolve([
     {
@@ -24,15 +36,6 @@ vi.mock('../../api/products', () => ({
   ])
 }));
 
-const mockDispatch = vi.fn();
-vi.mock('react-redux', () => ({
-  useDispatch: () => mockDispatch,
-  useSelector: (selector) =>
-    selector({
-      product: { selectedProduct: null },
-    }),
-}));
-
 describe('App component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,12 +47,41 @@ describe('App component', () => {
     expect(await screen.findByText('Producto 2')).toBeInTheDocument();
   });
 
+  test('muestra "Loading..." mientras se espera fetchProducts', async () => {
+    let resolveFetch;
+    const fetchPromise = new Promise((resolve) => {
+      resolveFetch = resolve;
+    });
+
+    vi.doMock('../../api/products', () => ({
+      fetchProducts: () => fetchPromise,
+    }));
+
+    const { default: AppWithPendingFetch } = await import('../../pages/App');
+    render(<AppWithPendingFetch />);
+
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+
+    act(() => {
+      resolveFetch([]);
+    });
+  });
+
+  // ✅ Este test es el que te faltaba para cubrir la rama `products.length !== 0`
+  test('no muestra "Loading..." cuando hay productos', async () => {
+    render(<App />);
+    expect(await screen.findByText('Producto 1')).toBeInTheDocument();
+    expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
+  });
+
   test('al hacer click en boton "Pagar con tarjeta" abre modal y dispatch setSelectedProduct', async () => {
     render(<App />);
 
     const card = await screen.findByText('Producto 1');
     const cardContainer = card.closest('.card-body');
-    const button = within(cardContainer).getByRole('button', { name: /Adquirir /i });
+    const button = within(cardContainer).getByText(/Adquirir/i);
+
+    expect(button).toBeInTheDocument();
 
     await act(async () => {
       fireEvent.click(button);

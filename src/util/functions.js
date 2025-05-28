@@ -34,6 +34,7 @@ export function validateCard(numeroTarjeta) {
 
 
 export const getCardType = (number) => {
+    if (typeof number !== 'string') return null;
     const cleaned = number.replace(/\D/g, '');
     if (/^4/.test(cleaned)) return 'visa';
     if (/^5[1-5]/.test(cleaned)) return 'mastercard';

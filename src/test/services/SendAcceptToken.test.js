@@ -72,4 +72,26 @@ describe('sendAcceptToken service', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('debe manejar correctamente una respuesta no OK del servidor', async () => {
+  encriptSigns.mockResolvedValue('hashFake123');
+
+  const mockResponse = {
+    ok: false,
+    json: () => Promise.resolve({ error: 'Bad Request' })
+  };
+
+  fetch.mockResolvedValue(mockResponse);
+
+  const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+  const result = await sendAcceptToken(total, aceptacion, autorizacion, formData, nameProduct, tokenCard);
+
+  expect(consoleLogSpy).toHaveBeenCalledWith(mockResponse);
+  expect(result).toEqual({ error: 'Bad Request' });
+
+  consoleLogSpy.mockRestore();
+});
+
+
 });
