@@ -30,6 +30,6 @@ export const tokenizacionCard = async ({ numero, cvv, expiracion, nombre }) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        throw new error;
+        throw error;
     }
 };

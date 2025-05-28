@@ -45,18 +45,18 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
                 <div className="modal-body">
                     <form>
                         <div className="mb-2">
-                            <label className="form-label">Nombre del titular</label>
-                            <input type="text" name='nombre' value={formData.nombre} onChange={handleInputChange} className="form-control" required />
+                            <label htmlFor='nombre' className="form-label">Nombre del titular</label>
+                            <input type="text" id='nombre' name='nombre' value={formData.nombre} onChange={handleInputChange} className="form-control" required />
                         </div>
 
                         <div className="mb-2">
-                            <label className="form-label">Correo Electrónico</label>
-                            <input type="email" name='correo' value={formData.correo} onChange={handleInputChange} className="form-control" required />
+                            <label htmlFor='correo' className="form-label">Correo Electrónico</label>
+                            <input type="email" id='correo' name='correo' value={formData.correo} onChange={handleInputChange} className="form-control" required />
                         </div>
 
                         <div className="mb-2">
-                            <label className="form-label">Número de tarjeta</label>
-                            <input type="number" name='numero' value={formData.numero} onChange={handleInputChange} className="form-control" maxLength="16" required />
+                            <label htmlFor='numero' className="form-label">Número de tarjeta</label>
+                            <input type="number" id='numero' name='numero' value={formData.numero} onChange={handleInputChange} className="form-control" maxLength="16" required />
 
                                 {getCardType(formData.numero) === 'visa' && (
                                 <img src="/visa-logo.png" alt="Logo de Visa" style={{ height: 24, marginLeft: 8 }} />  
@@ -68,23 +68,23 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
 
                         <div className="row">
                             <div className="col-md-6 mb-2">
-                            <label className="form-label">Fecha de expiración</label>
-                            <input type="text" name='expiracion' value={formData.expiracion} onChange={handleInputChange} className="form-control" placeholder="MM/AA" required />
+                            <label htmlFor='expiracion' className="form-label">Fecha de expiración</label>
+                            <input type="text" id='expiracion' name='expiracion' value={formData.expiracion} onChange={handleInputChange} className="form-control" placeholder="MM/AA" required />
                             </div>
                             <div className="col-md-6 mb-2">
-                            <label className="form-label">CVV</label>
-                            <input type="tel" name='cvv'value={formData.cvv} onChange={handleInputChange} className="form-control" required />
+                            <label htmlFor='cvv' className="form-label">CVV</label>
+                            <input type="tel" id='cvv' name='cvv'value={formData.cvv} onChange={handleInputChange} className="form-control" required />
                             </div>
                         </div>
 
                         <div className="mb-1">
-                            <label className="form-label">Ciudad</label>
-                            <input type="text" name='ciudad' value={formData.ciudad} onChange={handleInputChange} className="form-control" required />
+                            <label htmlFor='ciudad' className="form-label">Ciudad</label>
+                            <input id='ciudad' type="text" name='ciudad' value={formData.ciudad} onChange={handleInputChange} className="form-control" required />
                         </div>
 
                         <div className="mb-1">
-                            <label className="form-label">Dirección de entrega</label>
-                            <input type="text" name='direccion' value={formData.direccion} onChange={handleInputChange} className="form-control" required />
+                            <label htmlFor='direccion' className="form-label">Dirección de entrega</label>
+                            <input id='direccion' type="text" name='direccion' value={formData.direccion} onChange={handleInputChange} className="form-control" required />
                         </div>
 
 
