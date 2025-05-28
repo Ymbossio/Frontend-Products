@@ -1,6 +1,3 @@
-
-
-
 const API_URL = import.meta.env.VITE_URL_BACKEND;
 
 export const updateTransference = async (id_transaction_gateway, status) => {

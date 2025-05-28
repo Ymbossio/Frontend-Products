@@ -45,8 +45,6 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       const responseData = await sendAcceptToken(total, aceptacion, autorizacion, formData, product.name, tokenId);
       if (responseData.data?.status !== "PENDING") throw new Error('Error al crear la transacción');
 
-
-      //persist transaction data  
       dispatch(setTransactionData(responseData.data));
       localStorage.setItem('transaction', JSON.stringify(responseData.data));
 
