@@ -28,7 +28,12 @@ function App() {
   }, [])
 return (
   <>
-    <h1 className="text-center my-4">⚙️ Market Products 🔧</h1>
+  <h1 className="text-center my-4">⚙️ Market Products 🔧</h1>
+   {
+     products.length === 0 && (
+      <span className='text-center'>Loading...</span>
+     )
+   }
 
     <div className="container">
       <div className="row g-4">
@@ -50,7 +55,7 @@ return (
                   className="btn btn-primary mt-auto"
                   onClick={() => openPaymentModal(product)}
                 >
-                  Pagar con tarjeta 💳
+                  Adquirir 💳
                 </button>
               </div>
             </div>
