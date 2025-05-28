@@ -31,17 +31,24 @@ Puedes acceder a la aplicación desplegada en el siguiente enlace:
 
 ---
 # 📖Guía de uso
-🔗 Ingresa al enlace: https://frontend-products-zpdo.onrender.com/
 
-🛒 Navega por los productos disponibles en stock.
+### 🔗 Ingresa al enlace: https://frontend-products-zpdo.onrender.com/
+![1](https://github.com/user-attachments/assets/1895a46a-f3ca-4646-b838-320cbe7d62c8)
 
-✅ Selecciona el producto que deseas comprar.
 
-💳 Ingresa los datos de tu tarjeta para procesar el pago.
+### 🛒 Navega por los productos disponibles en stock.
 
-🔍 Verifica los detalles de la compra.
+### ✅ Selecciona el producto que deseas comprar.
+![2](https://github.com/user-attachments/assets/27c45410-f239-46df-a752-9d3c4a6da5a6)
 
-🧾 Confirma el pago y espera a que se procese la transacción.
+### 💳 Ingresa los datos de tu tarjeta para procesar el pago.
+![3](https://github.com/user-attachments/assets/44a9b5f9-adad-4700-af44-5840c8d406a3)
+
+### 🔍 Verifica los detalles de la compra.
+![5](https://github.com/user-attachments/assets/33945196-69d7-47b7-9de5-47064d833cd8)
+
+### 🧾 Confirma el pago y espera a que se procese la transacción.
+![6](https://github.com/user-attachments/assets/4a0b3d34-1f06-4285-92d3-f61d4bc39457)
 
 
 ---
