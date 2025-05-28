@@ -28,9 +28,3 @@ EXPOSE 80
 
 # Comando por defecto
 CMD ["nginx", "-g", "daemon off;"]
-
-# Construir la imagen
-docker build -t my-react-app .
-
-# Correr el contenedor
-docker run -p 80:80 my-react-app
