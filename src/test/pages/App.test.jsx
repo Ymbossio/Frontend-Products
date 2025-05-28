@@ -49,7 +49,7 @@ describe('App component', () => {
 
     const card = await screen.findByText('Producto 1');
     const cardContainer = card.closest('.card-body');
-    const button = within(cardContainer).getByRole('button', { name: /Pagar con tarjeta/i });
+    const button = within(cardContainer).getByRole('button', { name: /Adquirir /i });
 
     await act(async () => {
       fireEvent.click(button);

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PaymentSummaryModal } from '../../components/ModalInfo';
+import { PaymentSummaryModal } from '../../components/PaymentSummaryModal';
 import { vi } from 'vitest';
 
 const mockDispatch = vi.fn();
