@@ -1,4 +1,4 @@
-# Frontend Productos
+# 🛍️Frontend Productos
 
 **Frontend Productos** es una aplicación web para mostrar productos disponibles en stock, permitiendo a los usuarios elegir y comprar productos a través de una integración con la pasarela de pago.
 
@@ -8,42 +8,51 @@ La aplicación está desplegada en **Render** y cuenta con pruebas unitarias uti
 
 ---
 
-## Tecnologías utilizadas
+# 🛠️Tecnologías utilizadas
+⚛️ React: Librería principal para construir la interfaz de usuario.
 
-- **React**: Librería principal para construir la interfaz de usuario.
-- **Atomic Design**: Estructura organizada de componentes para facilitar la mantenibilidad.
-- **Bootstrap**: Framework CSS para un diseño responsive y componentes estilizados.
-- **Vitest**: Framework de pruebas para React, rápido y sencillo para pruebas unitarias y de integración.
-- **API**: Pasarela de pago para procesar compras de forma segura.
-- **Render**: Plataforma de despliegue y hosting de la aplicación.
+🧬 Atomic Design: Estructura organizada de componentes para facilitar la mantenibilidad.
+
+🎨 Bootstrap: Framework CSS para un diseño responsive y componentes estilizados.
+
+🧪 Vitest: Framework de pruebas para React, rápido y sencillo para pruebas unitarias y de integración.
+
+🔐 API: Pasarela de pago para procesar compras de forma segura.
+
+☁️ Render: Plataforma de despliegue y hosting de la aplicación.
 
 ---
 
-## Demo en Vivo
+# 🌐Demo en Vivo
 
 Puedes acceder a la aplicación desplegada en el siguiente enlace:
 
 🔗 [https://frontend-products-zpdo.onrender.com/](https://frontend-products-zpdo.onrender.com/)
 
 ---
-## Guía de uso
-1. ingrese al enlace: [https://frontend-products-zpdo.onrender.com/](https://frontend-products-zpdo.onrender.com/)
-2. Navega por los productos disponibles en stock.
-3. Selecciona el producto que deseas comprar.
-4. Ingrese los datos de su tarjeta para comprar el producto.
-5. Verifique los detalles de la compra
-6. y confirme el pago y espera a que se procese la compra.
+# 📖Guía de uso
+🔗 Ingresa al enlace: https://frontend-products-zpdo.onrender.com/
+
+🛒 Navega por los productos disponibles en stock.
+
+✅ Selecciona el producto que deseas comprar.
+
+💳 Ingresa los datos de tu tarjeta para procesar el pago.
+
+🔍 Verifica los detalles de la compra.
+
+🧾 Confirma el pago y espera a que se procese la transacción.
 
 
 ---
 
-## Enlaces
-- URL del sitio en producción: https://frontend-products-zpdo.onrender.com/
-- Repositorio en GitHub: https://github.com/Ymbossio/Frontend-Products
+# 🔗Enlaces
+-🌍 URL del sitio en producción: https://frontend-products-zpdo.onrender.com/
+-🐙 Repositorio en GitHub: https://github.com/Ymbossio/Frontend-Products
 
 ---
 
-## Cobertura Testing
+# ✅Cobertura Testing
 
 File                        | % Stmts | % Branch | % Funcs | % Lines |
 ----------------------------|---------|----------|---------|---------|
@@ -77,5 +86,5 @@ All files                   |   98.98 |    91.26 |   94.44 |   98.98 |
   
 ---
 
-## Autor
+# 👤Autor
 Yovanis Manuel Bossio Lambraño
