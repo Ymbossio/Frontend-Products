@@ -43,6 +43,8 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       const tokenId = data.data.id;
 
       const responseData = await sendAcceptToken(total, aceptacion, autorizacion, formData, product.name, tokenId);
+      console.log("response Transaction", responseData);
+      
       if (responseData.data?.status !== "PENDING") throw new Error('Error al crear la transacción');
 
       dispatch(setTransactionData(responseData.data));
@@ -56,17 +58,19 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       const internalRes = await createTransferInternal(id_transfer, payment_method, type_card, card_holder, status);
       if (!internalRes.success) throw new Error('Error al crear transacción interna');
 
-      const transferenceStatus = await getTransferenceById(id_transfer);
-      if (!transferenceStatus.success) throw new Error('Error al consultar transacción');
-
-      const updated = await updateTransference(id_transfer, transferenceStatus.data.status);
-      if (!updated.success) throw new Error('Error al actualizar transacción');
-
       const stockUpdated = await updateStock(product.id, product.stock);
       if (!stockUpdated.success) throw new Error('Error al actualizar stock');
 
       const deliveryCreated = await createDeliveries(formData.nombre, formData.direccion, id_transfer);
       if (!deliveryCreated.success) throw new Error('Error al crear entrega');
+
+      
+      const transferenceStatus = await getTransferenceById(id_transfer);
+      if (!transferenceStatus.success) throw new Error('Error al consultar transacción');
+
+      const updated = await updateTransference(id_transfer, transferenceStatus.data.status);
+      console.log("updatedd transactions")
+      if (!updated.success) throw new Error('Error al actualizar transacción');
 
       await fetchProducts().then(setProducts);
       toast.success('✅ Pago realizado exitosamente');
