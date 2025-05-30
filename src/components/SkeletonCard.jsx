@@ -1,3 +1,4 @@
+import React from "react";
 
 export function SkeletonCardBootstrap() {
   return (
@@ -18,7 +19,7 @@ export function SkeletonCardBootstrap() {
         <p className="card-text placeholder-glow text-muted">
           <span className="placeholder col-3"></span>
         </p>
-        <button className="btn btn-primary disabled placeholder col-6 mt-auto" tabIndex={-1}></button>
+        <button className="btn btn-primary disabled placeholder mt-auto" tabIndex={-1}></button>
       </div>
     </div>
   );
