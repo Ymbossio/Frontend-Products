@@ -30,6 +30,16 @@ Puedes acceder a la aplicación desplegada en el siguiente enlace:
 🔗 [https://frontend-products-zpdo.onrender.com/](https://frontend-products-zpdo.onrender.com/)
 
 ---
+
+### Cómo probar una compra
+
+Para simular una compra con tarjeta de crédito, utiliza la siguiente información de prueba:
+
+- ***Número de Tarjeta:*** 4242 4242 4242 4242
+- ***Fecha de Expiración:*** 03/28
+- ***CVV:*** 123
+
+---
 # 📖Guía de uso
 
 ### 🔗 Ingresa al enlace: https://frontend-products-zpdo.onrender.com/
