@@ -9,6 +9,7 @@ import { PurchaseDetails } from './PurchaseDetails';
 export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetailsCard, setProducts }) {
   const dispatch = useDispatch();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const formData = useSelector((state) => state.paymentForm);
   const { aceptacion, autorizacion, handlePayment } = usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard, showSuccessModal,setShowSuccessModal });
   
@@ -24,7 +25,14 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetai
   const total = Math.round(rawTotal); 
 
 
-
+  const onPayClick = async () => {
+    setLoading(true);
+    try {
+      await handlePayment(product, total);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoBack = () => {
     setDetailsCard(true);
@@ -82,7 +90,16 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetai
 
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={handleGoBack}>Regresar</button>
-                <button id="btn-pagar" className="btn btn-success" disabled={!formData.aceptaTerminos || !formData.autorizaDatos} onClick={() => handlePayment(product, total)}>Pagar ahora 💳</button>
+                <button id="btn-pagar"className="btn btn-success d-flex align-items-center justify-content-center"disabled={!formData.aceptaTerminos || !formData.autorizaDatos || loading}onClick={onPayClick}>
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Enviando...
+                    </>
+                  ) : (
+                    'Pagar ahora 💳'
+                  )}
+                </button>
               </div>
             </div>
           </div>
