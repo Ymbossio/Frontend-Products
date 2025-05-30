@@ -14,7 +14,7 @@ import { setTransactionData } from '../redux/TransactionSlice';
 import { resetForm } from '../redux/FormCardSlice';
 
 
-export function usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard }) {
+export function usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard, showSuccessModal,setShowSuccessModal  }) {
   const dispatch = useDispatch();
   const [aceptacion, setAceptacion] = useState('');
   const [autorizacion, setAutorizacion] = useState('');
@@ -48,9 +48,6 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       
       if (responseData.data?.status !== "PENDING") throw new Error('Error al crear la transacción');
 
-      dispatch(setTransactionData(responseData.data));
-      localStorage.setItem('transaction', JSON.stringify(responseData.data));
-
       const id_transfer = responseData.data.id;
       const { type: payment_method, extra } = responseData.data.payment_method;
       const { brand: type_card, card_holder } = extra;
@@ -69,17 +66,16 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
       const transferenceStatus = await getTransferenceById(id_transfer);
       if (!transferenceStatus.success) throw new Error('Error al consultar transacción');
 
+      dispatch(setTransactionData(transferenceStatus.data));
+      localStorage.setItem('transaction', JSON.stringify(transferenceStatus.data));
+
       const updated = await updateTransference(id_transfer, transferenceStatus.data.status);
-      console.log("updatedd transactions")
       if (!updated.success) throw new Error('Error al actualizar transacción');
 
       await fetchProducts().then(setProducts);
-      toast.success('✅ Pago realizado exitosamente');
-
-      dispatch(resetForm());
-
       setModalInfo(false);
-      setDetailsCard(false);
+      setShowSuccessModal(true);
+
     } catch (error) {
       toast.error('❌ Error en el pago: ' + error.message);
       btnPagar.disabled = false;

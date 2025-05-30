@@ -13,7 +13,9 @@ export const sendAcceptToken= async (total, aceptacion, autorizacion, formData, 
     const TotalVenta = total * 100; */
 
     const random = Math.floor(Math.random() * 1000);
-    const TotalVenta = Math.round(total * 100); 
+
+    const totalPesosRedondeado = Math.round(total);
+    const TotalVenta = totalPesosRedondeado * 100;
 
     const reference = nameProduct.split(' ').join('') + random.toString();
     const signsIntegrity = `${reference}${TotalVenta}${CURRENCY}${INTEGRITY}`
