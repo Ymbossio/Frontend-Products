@@ -73,6 +73,7 @@ describe('App component', () => {
     expect(await screen.findByText('Producto 1')).toBeInTheDocument();
     expect(screen.queryByText(/Loading.../i)).not.toBeInTheDocument();
   });
+  
 
   test('al hacer click en boton "Pagar con tarjeta" abre modal y dispatch setSelectedProduct', async () => {
     render(<App />);
