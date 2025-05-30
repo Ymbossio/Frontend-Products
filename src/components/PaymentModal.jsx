@@ -37,13 +37,6 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
 
     };
 
-
-    const validateCVV = (cvv) => {
-  const cvvRegex = /^\d{3,4}$/;
-  return cvvRegex.test(cvv);
-};
-
-
   return (
     <>
         <div className={`modal fade ${detailsCard ? 'show d-block' : '' }`} tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} aria-modal="true" role="dialog">
@@ -67,9 +60,7 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
 
                         <div className="mb-2">
                             <label htmlFor='numero' className="form-label">Número de tarjeta</label>
-                           <PatternFormat id="numero" name="numero" value={formData.numero} onValueChange={(values) => {
-    dispatch(setFormData({ numero: values.value }));
-  }} format="#### #### #### ####" allowEmptyFormatting mask="-" className="form-control" required/>
+                           <PatternFormat id="numero" name="numero" value={formData.numero} onValueChange={(values) => {dispatch(setFormData({ numero: values.value }));}} format="#### #### #### ####" allowEmptyFormatting mask="-" className="form-control" required/>
                                 {getCardType(formData.numero) === 'visa' && (
                                 <img src="/visa-logo.png" alt="Logo de Visa" style={{ height: 24, marginLeft: 8 }} />  
                                 )}
@@ -81,9 +72,7 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
                         <div className="row">
                             <div className="col-md-6 mb-2">
                             <label htmlFor='expiracion' className="form-label">Fecha de expiración</label>
-                            <PatternFormat id="expiracion" name="expiracion" value={formData.expiracion}   onValueChange={(values) => {
-    dispatch(setFormData({ expiracion: values.formattedValue }));
-  }}format="##/##" placeholder="MM/AA" mask={['M', 'M', 'A', 'A']} className="form-control" required/>
+                            <PatternFormat id="expiracion" name="expiracion" value={formData.expiracion}   onValueChange={(values) => {dispatch(setFormData({ expiracion: values.formattedValue }));}}format="##/##" placeholder="MM/AA" mask={['M', 'M', 'A', 'A']} className="form-control" required/>
                             </div>
                             <div className="col-md-6 mb-2">
                             <label htmlFor='cvv' className="form-label">CVV</label>
