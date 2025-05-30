@@ -5,10 +5,14 @@ import {PaymentModal} from '../components/PaymentModal'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSelectedProduct, clearSelectedProduct } from '../redux/ProductSlice'
 
+import { SkeletonCardBootstrap } from '../components/SkeletonCard';
+import { ProductCard } from '../components/ProductsCard';
+
 function App() {
 
   const [products, setProducts] = useState([])
   const [detailsCard, setDetailsCard] = useState(false)
+  const [loading, setLoading] = useState(true);
   const selectedProduct = useSelector(state => state.product.selectedProduct)
   const dispatch = useDispatch()
 
@@ -24,16 +28,32 @@ function App() {
 
 
   useEffect(() => {
-    fetchProducts().then(setProducts)
+    fetchProducts() 
+      .then(products => {
+        setProducts(products);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [])
 return (
   <>
   <h1 className="text-center my-4">⚙️ Market Products 🔧</h1>
-   {
-     products.length === 0 && (
-      <span className='text-center'>Loading...</span>
-     )
-   }
+   
+    <div className="container">
+      <div className="row g-4 justify-content-center">
+        {loading
+          ? [...Array(8)].map((_, i) => (
+              <div className="col-sm-6 col-md-4 col-lg-3" key={i}>
+                <SkeletonCardBootstrap />
+              </div>
+            ))
+          : products.map(product => (
+              <div className="col-sm-6 col-md-4 col-lg-3" key={product.id}>
+                <ProductCard product={product} onBuy={openPaymentModal} />
+              </div>
+            ))}
+      </div>
+    </div>
 
     <div className="container">
       <div className="row g-4">
