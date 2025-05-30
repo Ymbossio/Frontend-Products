@@ -39,8 +39,8 @@ return (
   <>
   <h1 className="text-center my-4">⚙️ Market Products 🔧</h1>
    
-     <div className="container">
-        <div className="row g-4 justify-content-center">
+     <div className="container d-flex align-items-center justify-content-center">
+        <div className="row g-4 d-flex align-items-center justify-content-center">
           {loading
             ? [...Array(8)].map((_, i) => (
                 <div className="col-sm-6 col-md-4 col-lg-3" key={i}>
@@ -52,7 +52,7 @@ return (
                 <div className="row g-4">
                   {products.map((product) => (
                     <div className="col-sm-6 col-md-4 col-lg-3" key={product.id}>
-                      <div className="card h-100 text-center shadow-sm">
+                      <div className="card h-100 text-center shadow-sm mt-3">
                         <img
                           src={product.image}
                           alt={product.title}

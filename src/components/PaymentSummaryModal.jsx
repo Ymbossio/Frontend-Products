@@ -1,13 +1,16 @@
+import React, { useState } from 'react';
 import { Toaster } from 'sonner';
 import { formatoCOP } from "../util/functions";
 import { usePaymentProcess } from '../hooks/usePaymentProcess';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFormData } from '../redux/FormCardSlice'
+import { PurchaseDetails } from './PurchaseDetails';
 
 export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetailsCard, setProducts }) {
   const dispatch = useDispatch();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const formData = useSelector((state) => state.paymentForm);
-  const { aceptacion, autorizacion, handlePayment } = usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard });
+  const { aceptacion, autorizacion, handlePayment } = usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard, showSuccessModal,setShowSuccessModal });
   
   if (!product) return null;
 
@@ -16,7 +19,10 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetai
   const tarifaBase = product.price * (1 + iva / 100);
   const tarifaEnvio = 15000;
   const importProduct = product.price;
-  const total = tarifaBase + importProduct + tarifaEnvio;
+
+  const rawTotal = tarifaBase + importProduct + tarifaEnvio;
+  const total = Math.round(rawTotal); 
+
 
 
 
@@ -81,7 +87,18 @@ export function PaymentSummaryModal({ product, modalInfo, setModalInfo, setDetai
             </div>
           </div>
         </div>
-      )}
+      )
+    }
+    
+    { showSuccessModal && (
+        <PurchaseDetails 
+          setShowSuccessModal={setShowSuccessModal}
+          setDetailsCard={setDetailsCard}
+        />
+      )
+    }
+
+      
       <Toaster position="top-right" />
     </>
   );
