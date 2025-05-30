@@ -29,6 +29,7 @@ describe('usePaymentForm', () => {
 
     expect(result.current.formData).toEqual(mockFormData);
   });
+  
 
   test('handleInputChange despacha setFormData con valor correcto para input', () => {
     useSelector.mockImplementation((selector) => selector({ paymentForm: {} }));
@@ -93,4 +94,5 @@ describe('usePaymentForm', () => {
 
     expect(result.current.isFormComplete()).toBe(false);
   });
+  
 });

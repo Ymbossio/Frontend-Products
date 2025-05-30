@@ -13,9 +13,13 @@ export function usePaymentForm() {
   };
 
   const isFormComplete = () => {
-    const requiredFields = ['nombre', 'numero', 'correo', 'expiracion', 'cvv'];
-    return requiredFields.every(field => formData[field]?.trim() !== '');
-  };
+  const requiredFields = ['nombre', 'numero', 'correo', 'expiracion', 'cvv'];
+  return requiredFields.every(field => {
+    const value = formData[field];
+    return typeof value === 'string' && value.trim() !== '';
+  });
+};
+
 
   return { formData, handleInputChange, isFormComplete };
 }

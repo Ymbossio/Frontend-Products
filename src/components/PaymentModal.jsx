@@ -3,13 +3,18 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { PaymentSummaryModal } from './PaymentSummaryModal';
 import { validateCard, getCardType } from '../util/functions';
 import { usePaymentForm } from '../hooks/usePaymentForms';
+import { toast } from 'sonner';
+import { PatternFormat } from 'react-number-format';
+import { setFormData } from '../redux/FormCardSlice';
+import { useDispatch } from 'react-redux';
+
 
 export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, setProducts}) {
-    
     if (!product) return null;
-
+    
     const [modalInfo, setModalInfo] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const dispatch = useDispatch();
 
     const {
       formData,
@@ -22,7 +27,7 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
         
         //valido si la tarjeta ingresada es válida o no con el algoritmo de luhn
         if (!validateCard(formData.numero)) {
-        alert('⚠️ Tarjeta no válida');
+        toast.error('⚠️ Tarjeta no válida');
         return;
         }
         
@@ -31,6 +36,12 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
         setModalInfo(true);
 
     };
+
+
+    const validateCVV = (cvv) => {
+  const cvvRegex = /^\d{3,4}$/;
+  return cvvRegex.test(cvv);
+};
 
 
   return (
@@ -56,8 +67,9 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
 
                         <div className="mb-2">
                             <label htmlFor='numero' className="form-label">Número de tarjeta</label>
-                            <input type="number" id='numero' name='numero' value={formData.numero} onChange={handleInputChange} className="form-control" maxLength="16" required />
-
+                           <PatternFormat id="numero" name="numero" value={formData.numero} onValueChange={(values) => {
+    dispatch(setFormData({ numero: values.value }));
+  }} format="#### #### #### ####" allowEmptyFormatting mask="-" className="form-control" required/>
                                 {getCardType(formData.numero) === 'visa' && (
                                 <img src="/visa-logo.png" alt="Logo de Visa" style={{ height: 24, marginLeft: 8 }} />  
                                 )}
@@ -69,11 +81,13 @@ export function PaymentModal({ product, detailsCard, onClose, setDetailsCard, se
                         <div className="row">
                             <div className="col-md-6 mb-2">
                             <label htmlFor='expiracion' className="form-label">Fecha de expiración</label>
-                            <input type="text" id='expiracion' name='expiracion' value={formData.expiracion} onChange={handleInputChange} className="form-control" placeholder="MM/AA" required />
+                            <PatternFormat id="expiracion" name="expiracion" value={formData.expiracion}   onValueChange={(values) => {
+    dispatch(setFormData({ expiracion: values.formattedValue }));
+  }}format="##/##" placeholder="MM/AA" mask={['M', 'M', 'A', 'A']} className="form-control" required/>
                             </div>
                             <div className="col-md-6 mb-2">
                             <label htmlFor='cvv' className="form-label">CVV</label>
-                            <input type="tel" id='cvv' name='cvv'value={formData.cvv} onChange={handleInputChange} className="form-control" required />
+                            <input type="number" id='cvv' name='cvv'value={formData.cvv} onChange={handleInputChange} className="form-control" required />
                             </div>
                         </div>
 
