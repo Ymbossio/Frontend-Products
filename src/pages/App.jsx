@@ -42,7 +42,7 @@ return (
     <div className="container">
       <div className="row g-4 justify-content-center">
         {loading
-          ? [...Array(16)].map((_, i) => (
+          ? [...Array(8)].map((_, i) => (
               <div className="col-sm-6 col-md-4 col-lg-3" key={i}>
                 <SkeletonCardBootstrap />
               </div>
