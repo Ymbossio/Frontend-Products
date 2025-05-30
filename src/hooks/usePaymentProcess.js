@@ -11,6 +11,7 @@ import { updateTransference } from '../services/UpdateTransference';
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setTransactionData } from '../redux/TransactionSlice';
+import { resetForm } from '../redux/FormCardSlice';
 
 
 export function usePaymentProcess({ formData, setProducts, setModalInfo, setDetailsCard }) {
@@ -74,6 +75,8 @@ export function usePaymentProcess({ formData, setProducts, setModalInfo, setDeta
 
       await fetchProducts().then(setProducts);
       toast.success('✅ Pago realizado exitosamente');
+
+      dispatch(resetForm());
 
       setModalInfo(false);
       setDetailsCard(false);
